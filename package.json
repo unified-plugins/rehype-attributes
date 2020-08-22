@@ -1,0 +1,52 @@
+{
+  "name": "rehype-attributes",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": [
+    "unist",
+    "html",
+    "rehype",
+    "rehype-plugin",
+    "plugin",
+    "attribute"
+  ],
+  "repository": "tingyur/rehype-attributes",
+  "bugs": "https://github.com/tingyur/rehype-attributes/issues",
+  "author": "Zhenyu Zhu <1214327383@qq.com>",
+  "types": "types/index.d.ts",
+  "files": [
+    "types/index.d.ts",
+    "lib",
+    "index.js"
+  ],
+  "scripts": {
+    "build-bundle": "browserify . -s rehypeAttributes > rehype-attributes.js",
+    "build-mangle": "browserify . -s rehypeAttributes -p tinyify > rehype-attributes.min.js",
+    "build": "npm run build-bundle && npm run build-mangle",
+    "test-types": "dtslint types",
+    "test": "node ./tests/run.js",
+    "debug": "node --inspect-brk ./tests/run.js"
+  },
+  "dependencies": {
+    "hast-util-is-element": "^1.0.4",
+    "unist-util-visit": "^2.0.3"
+  },
+  "devDependencies": {
+    "browserify": "^16.5.2",
+    "vfile-reporter": "^6.0.1",
+    "unist-builder": "^2.0.3",
+    "unified": "^9.1.0",
+    "typescript": "^3.9.7",
+    "tinyify": "^3.0.0",
+    "rehype-format": "^3.1.0",
+    "rehype-parse": "^7.0.1",
+    "rehype-sanitize": "^3.0.1",
+    "rehype-stringify": "^8.0.0",
+    "remark-parse": "^8.0.3",
+    "remark-rehype": "^7.0.0",
+    "hast-util-sanitize": "^3.0.0",
+    "hast": "^1.0.0",
+    "dtslint": "^3.6.14"
+  }
+}
