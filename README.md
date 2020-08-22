@@ -1,68 +1,85 @@
-# rehype-slugs
+# rehype-attributes
 
-rehype plugin to add ids to headings and output.
+rehype plugin to modify element attributes.
 
 ## Installation
 
 ```bash
-npm install unified
-yarn unified
+npm install rehype-attributes
+yarn rehype-attributes
 ```
 
 ## Usage
 
 `example.md` looks as follows:
 
-```md
-## [Hello](./example.md) World
-
-Hello World
-
-### Hello `World`
-
-Hello World
-
-## Hello <a href="./example.md">World</a>
-
-Hello World
+```html
+<p><a href="build/PnP.md">test</a></p>
+<p><a href="./build/PnP.md">test</a></p>
+<p><a href="PnP.md">test</a></p>
+<p><a href="./PnP.md">test</a></p>
+<p><a href="./原理.md">test</a></p>
+<p><a href="baidu.com">test</a></p>
+<p><a href="www.baidu.com">test</a></p>
+<p><a href="https://www.baidu.com">test</a></p>
 ```
 
 and `example.js` like this:
 
 ```js
 var vfile = require('to-vfile');
-var slugs = require('rehype-slugs');
-var remark = require('remark');
-var remark2rehype = require('remark-rehype');
+var attributes = require('rehype-attributes');
+var rehype = require('rehype');
 
-var result;
-remark()
-  .use(remark2rehype)
-  .use(slugs, {
-    maxDepth: 3,
-    callback: function (res) {
-      result = res;
+var mdReg = /(?:\.\/)?(.*)\.md$/;
+var urlReg = /^(https?:\/\/)?[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/;
+
+rehype()
+  .use(attributes, {
+    a: function (node) {
+      var { href, target } = transform(node);
+      node.properties.href = href;
+      node.properties.target = target;
     },
   })
-  .process(vfile.readSync('example.md'), function (err, file) {
+  .process(vfile.readSync('example.html'), function (err, file) {
     if (err) throw err;
-    console.log(slugs);
     console.log(String(file));
   });
+
+function transform(node) {
+  var href = node.properties.href;
+  var target = node.properties.target;
+  if (!href) {
+    return { href, target };
+  }
+  var match = mdReg.exec(href);
+  if (match) {
+    return { href: encodeURIComponent(match[1]) };
+  }
+  match = urlReg.exec(href);
+  if (match) {
+    return {
+      href: match[1] ? href : '//' + href,
+      target: '_blank',
+    };
+  }
+  return {
+    href,
+    target,
+  };
+}
 ```
 
 Now, running `node example.js` yields:
 
 ```
-[
-  { id: '33bea', depth: 1, tagName: 'h2', text: 'Hello World' },
-  { id: '1a67a', depth: 2, tagName: 'h3', text: 'Hello World' },
-  { id: '50eb7', depth: 1, tagName: 'h2', text: 'Hello World' }
-]
-<h2 id="33bea"><a href="./heading.md">Hello</a> World</h2>
-<p>Hello World</p>
-<h3 id="1a67a">Hello <code>World</code></h3>
-<p>Hello World</p>
-<h2 id="50eb7">Hello World</h2>
-<p>Hello World</p>
+<p><a href="build%2FPnP">test</a></p>
+<p><a href="build%2FPnP">test</a></p>
+<p><a href="PnP">test</a></p>
+<p><a href="PnP">test</a></p>
+<p><a href="%E5%8E%9F%E7%90%86">test</a></p>
+<p><a href="//baidu.com" target="_blank">test</a></p>
+<p><a href="//www.baidu.com" target="_blank">test</a></p>
+<p><a href="https://www.baidu.com" target="_blank">test</a></p>
 ```

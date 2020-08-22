@@ -16,7 +16,6 @@ unified()
   .use(rehype)
   .use(rehypeAttributes, {
     a: function (node) {
-      console.log(1)
       var { href, target } = transform(node)
       node.properties.href = href
       node.properties.target = target
