@@ -1,6 +1,6 @@
 {
   "name": "rehype-attributes",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "license": "MIT",
   "keywords": [
@@ -11,8 +11,8 @@
     "plugin",
     "attribute"
   ],
-  "repository": "tingyur/rehype-attributes",
-  "bugs": "https://github.com/tingyur/rehype-attributes/issues",
+  "repository": "unified-plugins/rehype-attributes",
+  "bugs": "https://github.com/unified-plugins/rehype-attributes/issues",
   "author": "Zhenyu Zhu <1214327383@qq.com>",
   "types": "types/index.d.ts",
   "files": [
